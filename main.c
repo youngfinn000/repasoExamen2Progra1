@@ -44,8 +44,12 @@ int main()
 {
 
     char archivo[] ="galaxia.bin";
+    int* a;
+    crearArreglo(&a);
 
-
+    planeta *arregloPlanetas;
+    int cantidadPlanetas;
+    leerArchivo(archivo, &arregloPlanetas, &cantidadPlanetas);
 
     printf("Hello world!\n");
     return 0;
@@ -154,7 +158,7 @@ void mostrarArregloGalaxiaCondicion (galaxia A[],int validos, char tipodegalaxia
     {
         if(strcmp (A->nombreGalaxia,tipodegalaxia==0))
         {
-                   mostrarGalaxia(A[i]);
+            mostrarGalaxia(A[i]);
         }
     }
     printf("\n------------------------\n");
@@ -201,7 +205,78 @@ void mostrarArregloPlanetas(planeta A[],int validos)
 
 /// funcion recursiva
 
+int cantSatelitesPlanetas (galaxia A,int i)
+{
+    int cant=0;
 
+    if (i<A.valPlanetas)
+    {
+        cantSatelitesPlanetas( A,i+1);
+        cant+=A.listaPlanetas[i].cantidadSatelites+cantSatelitesPlanetas( A,i+1);
+    }
+    return cant;
+}
 
+int cantidadSatelitesGalaxia(galaxia A[],int validos, int i)
+{
+    int cant=0;
 
+    if(i<validos)
+    {
+        cant=cantSatelitesPlanetas(A[i],0)+cantidadSatelitesGalaxia(A,validos,(i+1));
+    }
+    return cant;
+}
 
+void guardarEnArchivoPorMasa(char archivo[], float masaa, planeta arregloPlanetas[], int validosplaneta)
+{
+    FILE* archi = fopen(archivo, "ab");
+    int i = 0;
+
+    if (archi)
+    {
+        for (i = 0; i < validosplaneta; i++)
+        {
+            if (arregloPlanetas[i].masa > masaa)
+            {
+                fwrite(&arregloPlanetas[i], sizeof(planeta), 1, archi);
+            }
+        }
+        fclose(archi);
+    }
+    else
+    {
+        printf("error.\n");
+    }
+}
+
+/// arreglo dinamico
+
+void crearArreglo (int **a)
+{
+    (*a)=(int*)malloc(sizeof(int)*20);
+}
+
+void leerArchivo(char archivo[], planeta **arregloPlanetas, int *cantidadPlanetas) {
+    FILE *archi = fopen(archivo, "rb");
+    if (archi) {
+        int cantidad = 0;
+        planeta planetaTemporal;
+        while (fread(&planetaTemporal, sizeof(planeta), 1, archi) == 1) {
+            cantidad++;
+        }
+        rewind(archi); // Regresar al principio del archivo
+        crearArregloPlanetas(arregloPlanetas, cantidad);
+        *cantidadPlanetas = cantidad;
+        for (int i = 0; i < cantidad; i++) {
+            fread(&((*arregloPlanetas)[i]), sizeof(planeta), 1, archi);
+        }
+        fclose(archi);
+    } else {
+        printf("No se pudo abrir el archivo.\n");
+    }
+}
+
+void crearArregloPlanetas(planeta **a, int tam) {
+    (*a) = (planeta*)malloc(sizeof(planeta)*tam);
+}
