@@ -33,11 +33,17 @@ typedef struct
 planeta cargaPlaneta ();
 int cargaListaPlanetas (planeta A[],int dimension);
 galaxia cargaGalaxia();
+int cargarArregloGalaxia(galaxia A[],int dimension);
+
+void mostrarArregloGalaxiaCondicion (galaxia A[],int validos, char tipodegalaxia[]);
+void mostrarGalaxia(galaxia A);
+void mostrarPlaneta(planeta A);
+void mostrarArregloPlanetas(planeta A[],int validos);
 
 int main()
 {
 
-    char archivo[]='galaxia.bin';
+    char archivo[] ="galaxia.bin";
 
 
 
@@ -89,9 +95,9 @@ int cargaListaPlanetas (planeta A[],int dimension)
     {
         A[valPlanetas]=cargaPlaneta();
         valPlanetas++;
-    printf("para gargar mas planetas presionar s\n");
-    fflush(stdin);
-    scanf("%c",&carga);
+        printf("para gargar mas planetas presionar s\n");
+        fflush(stdin);
+        scanf("%c",&carga);
     }
     return valPlanetas;
 }
@@ -116,16 +122,84 @@ galaxia cargaGalaxia()
     gets(A.descubiertoPor);
 
     printf("\ningrese planetas\n");
-    A.valPlanetas+=cargaListaPlanetas(galaxia.listaPlanetas[],20);
+    A.valPlanetas+=cargaListaPlanetas(A.listaPlanetas,20);
 
     printf("\n-------------------------\n");
 
     return A;
 }
 
+int cargarArregloGalaxia(galaxia A[],int dimension)
+{
+    int validos=0;
+    char continuar='s';
+
+    while (continuar=='s' && validos<dimension)
+    {
+        A[validos]=cargaGalaxia();
+        validos++;
+
+    }
+    return validos;
+}
+
+/// mostrar
+
+void mostrarArregloGalaxiaCondicion (galaxia A[],int validos, char tipodegalaxia[])
+{
+    int i=0;
+    printf("\nGALAXIAS  \n");
+    printf("\n ---------- \n");
+    for(i=0; i<validos; i++)
+    {
+        if(strcmp (A->nombreGalaxia,tipodegalaxia==0))
+        {
+                   mostrarGalaxia(A[i]);
+        }
+    }
+    printf("\n------------------------\n");
+}
+
+void mostrarGalaxia(galaxia A)
+{
 
 
+    printf("\n-------------------------\n");
+    printf("\nnombre:%s\n",A.nombreGalaxia);
+    printf("\ntipo de galaxia:%s\n",A.tipoGalaxia);
+    printf("\npor quien fue descubierto:\n",A.descubiertoPor);
 
+    mostrarArregloPlanetas(A.listaPlanetas,A.valPlanetas);
+    printf("\nplanetas cargados:%d\n",A.valPlanetas);
+
+    printf("\n-------------------------\n");
+}
+
+void mostrarPlaneta(planeta A)
+{
+    printf("\n----------PLANETA--------\n");
+    printf("\n-------------------------\n");
+    printf("\nnombre:%s\n",A.nombrePlaneta);
+    printf("\nestrella:%s\n",A.estrella);
+    printf("\ncantidad de satelites:%d\n",A.cantidadSatelites);
+    printf("\nmasa:%f\n",A.masa);
+    printf("\ntemperatura maxima:%d\n",A.tempMax);
+    printf("\ntemperatura minima:%d\n",A.tempMin);
+    printf("\n-------------------------\n");
+}
+
+void mostrarArregloPlanetas(planeta A[],int validos)
+{
+    int i=0;
+    printf("\n----------LISTA PLANETAS--------\n");
+    for(i=0; i<validos; i++)
+    {
+        mostrarPlaneta(A[i]);
+    }
+    printf("\n----------FIN LISTA PLANETAS--------\n");
+}
+
+/// funcion recursiva
 
 
 
